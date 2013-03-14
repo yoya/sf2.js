@@ -171,6 +171,22 @@ function viewSample(sf, preset, inst, sample) {
         tr = document.createElement('tr');
         td = document.createElement('td');
         td.innerHTML = key+":"+sample[key];
+        if (key === "start") {
+            var playButton = document.createElement('button');
+            playButton.innerHTML = "play";
+            td.appendChild(playButton);
+            var stopButton = document.createElement('button');
+            stopButton.innerHTML = "stop";
+            td.appendChild(stopButton);
+        }
+        if (key === "startLoop") {
+            var playLoopButton = document.createElement('button');
+            playLoopButton.innerHTML = "playLoop";
+            td.appendChild(playLoopButton);
+            var stopLoopButton = document.createElement('button');
+            stopLoopButton.innerHTML = "stopLoop";
+            td.appendChild(stopLoopButton);
+        }
         tr.appendChild(td);
         sftable.appendChild(tr);
     }
@@ -178,22 +194,23 @@ function viewSample(sf, preset, inst, sample) {
     var end       = sample['end'];
     var startLoop = sample['startLoop'];
     var endLoop   = sample['endLoop'];
-    var sampleTable = new Uint8Array(sf.sfbuffer, sf.stda.smpl['offset']); // XXX depend that native endian is little endian.
+    var sampleTable = new Uint8Array(sf.sfbuffer, sf.stda.smpl['offset']);
     var waveTableLength = end - start + 1;
     console.log("waveTableLength:"+waveTableLength);
     var waveTable = new Float32Array(waveTableLength);
     for (i = 0, j= 2*start ; i < waveTableLength; i++) {
         var v = sampleTable[j++] + 0x100 * sampleTable[j++];
-        v = (v < 0x8000)?v:(v - 0x10000);
+        v = (v < 0x8000)?v:(v - 0x10000); // unsigned => signed
         waveTable[i] = v / 0x8000;
     }
     var waveLoopLength = endLoop - startLoop + 1;
     var waveLoopTable = new Float32Array(waveLoopLength);
     for (i = 0, j = 2*startLoop  ; i < waveLoopLength; i++) {
         var v = sampleTable[j++] + 0x100 * sampleTable[j++];
-        v = (v < 0x8000)?v:(v - 0x10000);
+        v = (v < 0x8000)?v:(v - 0x10000); // unsigned => signed
         waveLoopTable[i] = v / 0x8000;
     }
+
     var canvas_wave = document.getElementById("wave");
     var canvas_waveloop = document.getElementById("waveloop");
     canvas_wave.style.visibility = "visible";
@@ -203,6 +220,13 @@ function viewSample(sf, preset, inst, sample) {
     var width_waveloop = canvas_waveloop.width;
     var height_wave = canvas_wave.height;
     var height_waveloop = canvas_waveloop.height;
+
+    // reset
+    canvas_wave.width = width_wave;
+    canvas_waveloop.width = width_waveloop;
+    canvas_wave.height = height_wave;
+    canvas_waveloop.height = height_waveloop;
+
     var ctx_wave = canvas_wave.getContext('2d');    
     var ctx_waveloop = canvas_waveloop.getContext('2d');
     canvas_wave.style.backgroundColor = "rgb(10, 10, 30)";
@@ -234,15 +258,52 @@ function viewSample(sf, preset, inst, sample) {
         ctx_waveloop.lineTo(x, y);
     }
     ctx_waveloop.stroke();
-    //
-    var src = context.createBufferSource();
-    var buf = context.createBuffer(1, waveLoopLength, context.sampleRate);
-    var data = buf.getChannelData(0);
-    for (var i = 0 ; i < waveLoopLength ; i++) {
-        data[i] = waveLoopTable[i];
-    }
-    src.buffer = buf;
-    src.loop = true;
-    src.connect(context.destination);
-    src.noteOn(0);
+
+    var src = null;
+    playButton.addEventListener('click', function() {
+        if (src !==  null) {
+            src.noteOff(0);
+            src.disconnect(context.destination);
+        }
+        src = context.createBufferSource();
+        var buf = context.createBuffer(1, waveTableLength, context.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0 ; i < waveTableLength ; i++) {
+            data[i] = waveTable[i];
+        }
+        src.buffer = buf;
+        src.loop = true;
+        console.log(src);
+        src.loopStart = (startLoop - start) / context.sampleRate;
+        src.loopEnd = (endLoop - start) / context.sampleRate;
+        src.startLoop = src.loopStart;
+        src.endLoop = src.loopEnd;
+        src.connect(context.destination);
+        src.noteOn(0);
+    });
+    stopButton.addEventListener('click', function() {
+        src.noteOff(0);
+    });
+    var src2 = null;
+    playLoopButton.addEventListener('click', function() {
+        if (src2 !== null) {
+            src2.noteOff(0);
+            src2.disconnect(context.destination);
+        }
+        src2 = context.createBufferSource();
+        var buf2 = context.createBuffer(1, waveLoopLength, context.sampleRate);
+        var data2 = buf2.getChannelData(0);
+        for (var i = 0 ; i < waveLoopLength ; i++) {
+            data2[i] = waveLoopTable[i];
+        }
+        src2.buffer = buf2;
+        src2.loop = true;
+        src2.loopStart = 100;
+        src2.connect(context.destination);
+        src2.noteOn(0);
+    });
+    stopLoopButton.addEventListener('click', function() {
+        src2.noteOff(0);
+        src.disconnect(context.destination);
+    });
 }
