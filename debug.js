@@ -1,3 +1,5 @@
+var acontext = new webkitAudioContext();
+
 function viewBanksPresets(sf) {
     console.debug("viewBanksPresets(sf)");
     console.debug(sf);
@@ -153,7 +155,7 @@ function viewInstrument(sf, preset, inst) {
 function viewSample(sf, preset, inst, sample) {
     console.debug("viewSample(sf, preset, inst, sample)");
     console.debug(sample);
-    var context = new webkitAudioContext();
+    var context = acontext;
     var src = context.createBufferSource();
     src.disconnect(context.destination);
     var sftitle = document.getElementById('sftitle');    
@@ -260,11 +262,20 @@ function viewSample(sf, preset, inst, sample) {
     ctx_waveloop.stroke();
 
     var src = null;
-    playButton.addEventListener('click', function() {
+    var allNoteOff = function() {
         if (src !==  null) {
             src.noteOff(0);
             src.disconnect(context.destination);
+            src = null;
         }
+        if (src2 !== null) {
+            src2.noteOff(0);
+            src2.disconnect(context.destination);
+            src2 = null;
+        }
+    }
+    playButton.addEventListener('click', function() {
+        allNoteOff();
         src = context.createBufferSource();
         var buf = context.createBuffer(1, waveTableLength, context.sampleRate);
         var data = buf.getChannelData(0);
@@ -272,24 +283,26 @@ function viewSample(sf, preset, inst, sample) {
             data[i] = waveTable[i];
         }
         src.buffer = buf;
-        src.loop = true;
-        console.log(src);
-        src.loopStart = (startLoop - start) / context.sampleRate;
-        src.loopEnd = (endLoop - start) / context.sampleRate;
-        src.startLoop = src.loopStart;
-        src.endLoop = src.loopEnd;
-        src.connect(context.destination);
-        src.noteOn(0);
+        if ('loopStart' in src) { // Chrome
+            src.loop = true;
+            src.loopStart = (startLoop - start) / context.sampleRate;
+            src.loopEnd = (endLoop - start) / context.sampleRate;
+            src.connect(context.destination);
+            src.noteOn(0);
+        } else { // iOS
+//            src.loop = true;
+            //        src.loopStart = (startLoop - start) / context.sampleRate;
+            //        src.loopEnd = (endLoop - start) / context.sampleRate;
+            src.connect(context.destination);
+            src.noteOn(0);
+        }        
     });
     stopButton.addEventListener('click', function() {
-        src.noteOff(0);
+        allNoteOff();
     });
     var src2 = null;
     playLoopButton.addEventListener('click', function() {
-        if (src2 !== null) {
-            src2.noteOff(0);
-            src2.disconnect(context.destination);
-        }
+        allNoteOff();
         src2 = context.createBufferSource();
         var buf2 = context.createBuffer(1, waveLoopLength, context.sampleRate);
         var data2 = buf2.getChannelData(0);
@@ -303,7 +316,6 @@ function viewSample(sf, preset, inst, sample) {
         src2.noteOn(0);
     });
     stopLoopButton.addEventListener('click', function() {
-        src2.noteOff(0);
-        src.disconnect(context.destination);
+        allNoteOff();
     });
 }
