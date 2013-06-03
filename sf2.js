@@ -199,18 +199,25 @@
         },
         organizeBag: function(presets_insts, preset_inst, 
                               bagId, genId, modId) {
-            var startBag = preset_inst['bagNdx'];
-            if (i  < (presets_insts.length -1)) {
-                var endBag = presets_insts[i+1]['bagNdx'] - 1;
-            } else {
-                var endBag = pbags.length - 1;
-            }
             bags    = this.ptda[bagId]['detail'];
             gens    = this.ptda[genId]['detail'];
             mods    = this.ptda[modId]['detail'];
             insts   = this.ptda['inst']['detail'];
             samples = this.ptda['shdr']['detail'];
+
+            var startBag = preset_inst['bagNdx'];
+            if (bagId + 1 < presets_insts.length) {
+                var endBag = presets_insts[bagId + 1]['bagNdx'] - 1;
+            } else {
+                var endBag = bags.length - 1;
+            }
             preset_inst['bags'] = [];
+
+            if (preset_inst['name'] === 'Acoustic Piano HV1') {
+                console.log(startBag+"=>"+endBag);
+
+            }
+            
             for (var bagIdx = startBag ; bagIdx <= endBag ; bagIdx++) {
                 var bag = bags[bagIdx]
                 preset_inst['bags'].push(bag);
@@ -230,8 +237,8 @@
                     bag['gens'][oper] = gen;
                     if (oper === 41) { // instrument
                         var inst = insts[gen['amount']];
-                        gen['inst'] = inst;
                         this.organizeBag(insts, inst, 'ibag', 'igen', 'imod');
+                        gen['inst'] = inst;
                     } else if (oper === 53) { // sampleID
                         gen['sample'] = samples[gen['amount']];
                     }
