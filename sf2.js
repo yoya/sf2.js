@@ -1,5 +1,6 @@
+"use strict";
 (function() {
-    SoundFont2 = function() {
+    var SoundFont2 = function() {
         this.sfbuffer = null;
         this.sfdata = null;
         this.banks = null;
@@ -76,7 +77,7 @@
                 return {};
             }
             listChunkSize = this.getDWORD(o + 4);
-            nextChunkOffset = o + 8 + listChunkSize;
+            var nextChunkOffset = o + 8 + listChunkSize;
             if (! this.matchFourCC(o + 8, listId)) {
                 id = this.getString(o + 8, 4);
                 console.error("not "+listId+" chunk ("+id+")");
@@ -84,8 +85,8 @@
             }
             o = o + 12 ;
             while ( o < nextChunkOffset) {
-                id = this.getString(o, 4);
-                size = this.getDWORD(o + 4);
+                var id = this.getString(o, 4);
+                var size = this.getDWORD(o + 4);
                 chunkInfo[id] = {id:id, offset:o, size:size};
                 o += 8;
                 chunkInfo[id]['detail'] = this.parseChunkInfo(id, o, size);
@@ -184,8 +185,8 @@
         },
         organize: function() {
             this.banks = {};
-            presets = this.ptda['phdr']['detail'];
-            pbags   = this.ptda['pbag']['detail'];
+            var presets = this.ptda['phdr']['detail'];
+            var pbags   = this.ptda['pbag']['detail'];
             for (var i = 0, n = presets.length ; i < n ; i++) {
                 var preset = presets[i];
                 var bankId = preset['bank'];
@@ -199,11 +200,11 @@
         },
         organizeBag: function(presets_insts, preset_inst, 
                               bagId, genId, modId) {
-            bags    = this.ptda[bagId]['detail'];
-            gens    = this.ptda[genId]['detail'];
-            mods    = this.ptda[modId]['detail'];
-            insts   = this.ptda['inst']['detail'];
-            samples = this.ptda['shdr']['detail'];
+            var bags    = this.ptda[bagId]['detail'];
+            var gens    = this.ptda[genId]['detail'];
+            var mods    = this.ptda[modId]['detail'];
+            var insts   = this.ptda['inst']['detail'];
+            var samples = this.ptda['shdr']['detail'];
 
             var startBag = preset_inst['bagNdx'];
             if (bagId + 1 < presets_insts.length) {

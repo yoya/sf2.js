@@ -1,3 +1,4 @@
+"use strict";
 var acontext = new webkitAudioContext();
 
 function viewBanksPresets(sf) {
@@ -40,7 +41,7 @@ function viewBanksPresets(sf) {
                     td.setAttribute('rowSpan', nPreset);
                 }
                 if (key === 'bagNdx') {
-                    button = document.createElement('button');
+                    var button = document.createElement('button');
                     td.innerHTML = null;
                     button.innerHTML = value;
                     button.addEventListener('click', viewBags.bind(this, sf, preset, null), false);
@@ -80,17 +81,18 @@ function viewBags(sf, preset, inst) {
     var sftable = document.getElementById('sftable');
     sftable.innerHTML = null;
     var prevBag = null;
-    mod_keylist = ['type', 'p', 'd', 'cc', 'index'];
+    var mod_keylist = ['type', 'p', 'd', 'cc', 'index'];
     for (var bagId = 0, n = bags.length ; bagId < n ; bagId++) {
         var bag = bags[bagId];
         var gens = bag['gens']; 
         var mods = bag['mods'];
         var nGens = 0;
         var nMods = 0;
+        var gen, tr, td;
         for (var oper in gens) { nGens++; }
         for (var modIdx in mods) { nMods++; }
         for (var oper in gens) {
-            var gen = gens[oper];
+            gen = gens[oper];
             tr = document.createElement('tr');
             if (bagId !== prevBag) {
                 td = document.createElement('td');
@@ -109,7 +111,7 @@ function viewBags(sf, preset, inst) {
             td = document.createElement('td');
             td.innerHTML = gen_value.join(', ');
             if (oper == 41) { // instrument
-                button = document.createElement('button');
+                var button = document.createElement('button');
                 button.innerHTML = "inst:"+gen['amount'];
                 var inst = gen['inst'];
                 button.addEventListener('click', viewInstrument.bind(this, sf, preset, inst), false);
@@ -166,10 +168,11 @@ function viewSample(sf, preset, inst, sample) {
     sfback.style.visibility = "visible";
     sfback.innerHTML = "back";
     sfback.addEventListener('click', viewBags.bind(this, sf, preset, inst, false));
-    sample_keylist = ['name', 'start', 'end', 'startLoop', 'endLoop', 'sampleRate', 'originalPitch', 'pitchCorrection', 'sampleLink', 'sampleType'];
+    var sample_keylist = ['name', 'start', 'end', 'startLoop', 'endLoop', 'sampleRate', 'originalPitch', 'pitchCorrection', 'sampleLink', 'sampleType'];
     var sftable = document.getElementById('sftable');
     
     sftable.innerHTML = null;
+    var tr, td;
     for (var idx in sample_keylist) {
         var key = sample_keylist[idx];
         tr = document.createElement('tr');
