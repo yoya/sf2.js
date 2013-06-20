@@ -186,7 +186,7 @@
             this.banks = {};
             presets = this.ptda['phdr']['detail'];
             pbags   = this.ptda['pbag']['detail'];
-            for (i = 0, n = presets.length ; i < n ; i++) {
+            for (var i = 0, n = presets.length ; i < n ; i++) {
                 var preset = presets[i];
                 var bankId = preset['bank'];
                 var presetId = preset['preset'];
@@ -231,7 +231,7 @@
                     var endMod = mods.length - 1;
                 }
                 bag['gens'] = {};
-                for (genIdx = startGen ; genIdx <= endGen ; genIdx++) {
+                for (var genIdx = startGen ; genIdx <= endGen ; genIdx++) {
                     var gen = gens[genIdx];
                     var oper = gen['oper'];
                     bag['gens'][oper] = gen;
@@ -244,7 +244,7 @@
                     }
                 }
                 bag['mods'] = []; // XXX
-                for (modIdx = startMod ; modIdx <= endMod ; modIdx++) {
+                for (var modIdx = startMod ; modIdx <= endMod ; modIdx++) {
                     var mod = mods[modIdx];
                     bag['mods'].push(mod); // XXX
                 }

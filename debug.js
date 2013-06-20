@@ -13,7 +13,7 @@ function viewBanksPresets(sf) {
     var tr = document.createElement('tr');
     var th, td;
     var preset_keylist = ['bank', 'preset', 'name', 'bagNdx', 'library', 'genre'];
-    for (idx in preset_keylist) {
+    for (var idx in preset_keylist) {
         th = document.createElement('th');
         th.innerHTML = preset_keylist[idx];
         tr.appendChild(th);
@@ -28,7 +28,7 @@ function viewBanksPresets(sf) {
         for (var presetId in banks[bankId]) {
             var preset = banks[bankId][presetId];
             tr = document.createElement('tr');
-            for (idx in preset_keylist) {
+            for (var idx in preset_keylist) {
                 var key = preset_keylist[idx];
                 var value = preset[key];
                 if (key === 'bank' && prevBank === bankId) {
@@ -87,9 +87,9 @@ function viewBags(sf, preset, inst) {
         var mods = bag['mods'];
         var nGens = 0;
         var nMods = 0;
-        for (oper in gens) { nGens++; }
-        for (modIdx in mods) { nMods++; }
-        for (oper in gens) {
+        for (var oper in gens) { nGens++; }
+        for (var modIdx in mods) { nMods++; }
+        for (var oper in gens) {
             var gen = gens[oper];
             tr = document.createElement('tr');
             if (bagId !== prevBag) {
@@ -121,10 +121,12 @@ function viewBags(sf, preset, inst) {
                 button.addEventListener('click', viewSample.bind(this, sf, preset, inst, sample), false);
                 td.appendChild(button);
             }
-            tr.appendChild(td);
-            sftable.appendChild(tr);
+            if ((oper == 41)||(oper == 43)||(oper == 53)) {
+                tr.appendChild(td);
+                sftable.appendChild(tr);
+            }
         }
-        for (modIdx in mods) {
+        for (var modIdx in mods) {
             var mod = mods[modIdx];
             tr = document.createElement('tr');
             if (bagId !== prevBag) {
@@ -134,7 +136,7 @@ function viewBags(sf, preset, inst) {
                 prevBag = bagId;                
             }
             var mod_value = [];
-            for (idx in mod_keylist) {
+            for (var idx in mod_keylist) {
                 var key = mod_keylist[idx];
                 mod_value.push(key+":"+mod[key]);
             }
@@ -168,7 +170,7 @@ function viewSample(sf, preset, inst, sample) {
     var sftable = document.getElementById('sftable');
     
     sftable.innerHTML = null;
-    for (idx in sample_keylist) {
+    for (var idx in sample_keylist) {
         var key = sample_keylist[idx];
         tr = document.createElement('tr');
         td = document.createElement('td');
@@ -200,14 +202,14 @@ function viewSample(sf, preset, inst, sample) {
     var waveTableLength = end - start + 1;
     console.log("waveTableLength:"+waveTableLength);
     var waveTable = new Float32Array(waveTableLength);
-    for (i = 0, j= 2*start ; i < waveTableLength; i++) {
+    for (var i = 0, j= 2*start ; i < waveTableLength; i++) {
         var v = sampleTable[j++] + 0x100 * sampleTable[j++];
         v = (v < 0x8000)?v:(v - 0x10000); // unsigned => signed
         waveTable[i] = v / 0x8000;
     }
     var waveLoopLength = endLoop - startLoop + 1;
     var waveLoopTable = new Float32Array(waveLoopLength);
-    for (i = 0, j = 2*startLoop  ; i < waveLoopLength; i++) {
+    for (var i = 0, j = 2*startLoop  ; i < waveLoopLength; i++) {
         var v = sampleTable[j++] + 0x100 * sampleTable[j++];
         v = (v < 0x8000)?v:(v - 0x10000); // unsigned => signed
         waveLoopTable[i] = v / 0x8000;
@@ -245,7 +247,7 @@ function viewSample(sf, preset, inst, sample) {
     ctx_wave.fill();
     ctx_wave.beginPath();
     ctx_wave.strokeStyle = "rgb(200, 255, 255)";
-    for (x = 0 ; x < width_wave ; x++) {
+    for (var x = 0 ; x < width_wave ; x++) {
         var idx = (x * (waveTableLength / width_wave)) | 0;
         var y = (height_wave / 2) - (height_wave / 2) * waveTable[idx];
         ctx_wave.lineTo(x, y);
@@ -254,7 +256,7 @@ function viewSample(sf, preset, inst, sample) {
     // waveLoop
     ctx_waveloop.strokeStyle = "rgb(200, 255, 255)";
     ctx_waveloop.beginPath();
-    for (x = 0 ; x < width_waveloop ; x++) {
+    for (var x = 0 ; x < width_waveloop ; x++) {
         var idx = (x * (waveLoopLength / width_waveloop)) | 0;
         var y = (height_waveloop / 2) - (height_waveloop / 2) * waveLoopTable[idx];
         ctx_waveloop.lineTo(x, y);
