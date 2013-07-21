@@ -20,6 +20,7 @@ function viewBanksPresets(sf) {
     sfback.style.visibility = "hidden";
     var sftable = document.getElementById('sftable');
     sftable.innerHTML = null;
+    var sftable_frag = document.createDocumentFragment();
     var banks = sf.banks
     var tr = document.createElement('tr');
     var th, td;
@@ -29,7 +30,7 @@ function viewBanksPresets(sf) {
         th.innerHTML = preset_keylist[idx];
         tr.appendChild(th);
     }
-    sftable.appendChild(tr)
+    sftable_frag.appendChild(tr)
     for (var bankId in banks) {
         var nPreset = 0;
         for (var presetId in banks[bankId]) {
@@ -60,9 +61,10 @@ function viewBanksPresets(sf) {
                 tr.appendChild(td);
                 prevBank = bankId;
             }
-            sftable.appendChild(tr);
+            sftable_frag.appendChild(tr);
         }
     }
+    sftable.appendChild(sftable_frag);
 }
 
 function viewBags(sf, preset, inst) {
@@ -90,6 +92,7 @@ function viewBags(sf, preset, inst) {
     }
     var sftable = document.getElementById('sftable');
     sftable.innerHTML = null;
+    var sftable_frag = document.createDocumentFragment();
     var prevBag = null;
     var mod_keylist = ['type', 'p', 'd', 'cc', 'index'];
     for (var bagId = 0, n = bags.length ; bagId < n ; bagId++) {
@@ -135,7 +138,7 @@ function viewBags(sf, preset, inst) {
             }
             if ((oper == 41)||(oper == 43)||(oper == 53)) {
                 tr.appendChild(td);
-                sftable.appendChild(tr);
+                sftable_frag.appendChild(tr);
             }
         }
         for (var modIdx in mods) {
@@ -155,9 +158,10 @@ function viewBags(sf, preset, inst) {
             td = document.createElement('td');
             td.innerHTML = mod_value.join(', ');
             tr.appendChild(td);
-            sftable.appendChild(tr);
+            sftable_frag.appendChild(tr);
         }
     }
+    sftable.appendChild(sftable_frag);
 }
 
 function viewInstrument(sf, preset, inst) {
@@ -182,6 +186,7 @@ function viewSample(sf, preset, inst, sample) {
     var sftable = document.getElementById('sftable');
     
     sftable.innerHTML = null;
+    var sftable_frag = document.createDocumentFragment();
     var tr, td;
     for (var idx in sample_keylist) {
         var key = sample_keylist[idx];
@@ -205,8 +210,9 @@ function viewSample(sf, preset, inst, sample) {
             td.appendChild(stopLoopButton);
         }
         tr.appendChild(td);
-        sftable.appendChild(tr);
+        sftable_frag.appendChild(tr);
     }
+    sftable.appendChild(sftable_frag);
     var start     = sample['start']; // maybe, sample offset (not byte offset)
     var end       = sample['end'];
     var startLoop = sample['startLoop'];
