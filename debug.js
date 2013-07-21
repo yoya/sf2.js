@@ -1,6 +1,16 @@
 "use strict";
 var acontext = new webkitAudioContext();
 
+var listener_BackButton = null; // Kludge!!! >_<;
+
+function addEventListener_BackButton(sfback, type, listener, useCapture) {
+    if (listener_BackButton !== null) {
+        sfback.removeEventListener(type, listener_BackButton);
+    }
+    sfback.addEventListener(type, listener, useCapture);
+    listener_BackButton = listener;
+}
+
 function viewBanksPresets(sf) {
     console.debug("viewBanksPresets(sf)");
     console.debug(sf);
@@ -74,9 +84,9 @@ function viewBags(sf, preset, inst) {
     sfback.style.visibility = "visible";
     sfback.innerHTML = "back";
     if (inst === null) {
-        sfback.addEventListener('click', viewBanksPresets.bind(this, sf), false);
+        addEventListener_BackButton(sfback, 'click', viewBanksPresets.bind(this, sf), false);
     } else {
-        sfback.addEventListener('click', viewBags.bind(this, sf, preset, null), false);
+        addEventListener_BackButton(sfback, 'click', viewBags.bind(this, sf, preset, null), false);
     }
     var sftable = document.getElementById('sftable');
     sftable.innerHTML = null;
@@ -167,7 +177,7 @@ function viewSample(sf, preset, inst, sample) {
     var sfback = document.getElementById('sfback');
     sfback.style.visibility = "visible";
     sfback.innerHTML = "back";
-    sfback.addEventListener('click', viewBags.bind(this, sf, preset, inst, false));
+    addEventListener_BackButton(sfback, 'click', viewBags.bind(this, sf, preset, inst, false));
     var sample_keylist = ['name', 'start', 'end', 'startLoop', 'endLoop', 'sampleRate', 'originalPitch', 'pitchCorrection', 'sampleLink', 'sampleType'];
     var sftable = document.getElementById('sftable');
     
