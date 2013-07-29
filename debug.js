@@ -108,8 +108,8 @@ function viewBags(sf, preset, inst) {
         var nGens = 0;
         var nMods = 0;
         var gen, tr, td;
-        for (var oper in gens) { nGens++; }
-        for (var modIdx in mods) { nMods++; }
+        for (gen in gens) nGens++;
+        nMods = mods.length;
         for (var oper in gens) {
             gen = gens[oper];
             tr = document.createElement('tr');
@@ -142,10 +142,8 @@ function viewBags(sf, preset, inst) {
                 button.addEventListener('click', viewSample.bind(this, sf, preset, inst, sample), false);
                 td.appendChild(button);
             }
-            if ((oper == 41)||(oper == 43)||(oper == 53)) {
-                tr.appendChild(td);
-                sftable_frag.appendChild(tr);
-            }
+            tr.appendChild(td);
+            sftable_frag.appendChild(tr);
         }
         for (var modIdx in mods) {
             var mod = mods[modIdx];
