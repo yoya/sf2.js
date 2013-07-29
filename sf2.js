@@ -195,8 +195,32 @@
                     this.banks[bankId] = {};
                 }
                 this.banks[bankId][presetId] = preset;
-                this.organizeBag(presets, preset, 'pbag', 'pgen', 'pmod');
+//                this.organizeBag(presets, preset, 'pbag', 'pgen', 'pmod');
             }
+        },
+        getPresetDetail: function(bankId, presetId) {
+            console.log('getPresetDetail('+bankId+","+presetId+")");
+            var banks = this.banks;
+            if ((bankId in banks) && (presetId in banks[bankId]) &&
+                ('bags' in banks[bankId][presetId])) {
+                return banks[bankId][presetId];
+            }
+            var presets = this.ptda['phdr']['detail'];
+             console.log(presets.length);
+            for (var i = 0, n = presets.length ; i < n ; i++) {
+                var preset = presets[i];
+                if ((preset['bank'] == bankId) && (preset['preset'] == presetId)) {
+                    if ((bankId in banks) === false) {
+                        this.banks[bankId] = {};
+                    }
+                    this.banks[bankId][presetId] = preset;
+                    this.organizeBag(presets, preset, 'pbag', 'pgen', 'pmod');
+                    console.log(preset);
+                    return preset;
+                }
+            }
+            console.error("not found preset: bankId"+bankId+" presetId"+presetId);
+            return null;
         },
         organizeBag: function(presets_insts, preset_inst, 
                               bagId, genId, modId) {

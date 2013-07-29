@@ -69,7 +69,13 @@ function viewBanksPresets(sf) {
 
 function viewBags(sf, preset, inst) {
     console.debug("viewBags(fs, preset_inst)");
-    var preset_inst = (inst === null)?preset:inst;
+    var preset_inst = null;
+    if (inst === null) {
+        preset = sf.getPresetDetail(preset['bank'], preset['preset']);
+        preset_inst = preset;
+    } else {
+        preset_inst = inst;
+    }
     console.debug(preset_inst);
     var bags = preset_inst['bags'];
     var canvas_wave = document.getElementById("wave");
