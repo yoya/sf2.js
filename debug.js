@@ -289,12 +289,12 @@ function viewSample(sf, preset, inst, sample) {
     var src = null;
     var allNoteOff = function() {
         if (src !==  null) {
-            src.noteOff(0);
+            src.stop(0);
             src.disconnect(context.destination);
             src = null;
         }
         if (src2 !== null) {
-            src2.noteOff(0);
+            src2.stop(0);
             src2.disconnect(context.destination);
             src2 = null;
         }
@@ -313,13 +313,13 @@ function viewSample(sf, preset, inst, sample) {
             src.loopStart = (startLoop - start) / context.sampleRate;
             src.loopEnd = (endLoop - start) / context.sampleRate;
             src.connect(context.destination);
-            src.noteOn(0);
+            src.start(0);
         } else { // iOS
 //            src.loop = true;
             //        src.loopStart = (startLoop - start) / context.sampleRate;
             //        src.loopEnd = (endLoop - start) / context.sampleRate;
             src.connect(context.destination);
-            src.noteOn(0);
+            src.start(0);
         }        
     });
     stopButton.addEventListener('click', function() {
@@ -338,7 +338,7 @@ function viewSample(sf, preset, inst, sample) {
         src2.loop = true;
         src2.loopStart = 100;
         src2.connect(context.destination);
-        src2.noteOn(0);
+        src2.start(0);
     });
     stopLoopButton.addEventListener('click', function() {
         allNoteOff();
