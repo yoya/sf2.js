@@ -34,6 +34,7 @@ if (document.addEventListener) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState > 3) {
             if (xhr.status == 200) {
+               console.debug("sound font loading done:"+xhr.response.byteLength);
                var sf = new SoundFont2();
                sf.input(xhr.response);
                viewBanksPresets(sf);
