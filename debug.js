@@ -1,5 +1,7 @@
 "use strict";
-var acontext = new webkitAudioContext();
+
+window.AudioContext = window.AudioContext||window.webkitAudioContext;
+var acontext = new AudioContext();
 
 var listener_BackButton = null; // Kludge!!! >_<;
 
