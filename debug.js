@@ -1,5 +1,7 @@
 "use strict";
-var acontext = new webkitAudioContext();
+
+window.AudioContext = window.AudioContext||window.webkitAudioContext;
+var acontext = new AudioContext();
 
 var listener_BackButton = null; // Kludge!!! >_<;
 
@@ -179,7 +181,7 @@ function viewSample(sf, preset, inst, sample) {
     console.debug(sample);
     var context = acontext;
     var src = context.createBufferSource();
-    src.disconnect(context.destination);
+    // src.disconnect(context.destination);
     var sftitle = document.getElementById('sftitle');    
     sftitle.innerHTML = "Sample:"+sample['name'];
     var sfback = document.getElementById('sfback');
