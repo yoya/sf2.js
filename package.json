@@ -1,0 +1,12 @@
+{
+  "name": "sf2.js",
+  "version": "0.2.0",
+  "description": "SoundFont2 parser and viewer",
+  "type": "module",
+  "main": "src/soundfont.js",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}

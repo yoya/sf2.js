@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sf2.js viewer</title>
+<link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+<header>
+  <h1><a href="#">sf2.js</a></h1>
+  <label class="file">Open .sf2… <input type="file" id="file" accept=".sf2"></label>
+  <span id="status" role="status">Loading…</span>
+</header>
+<nav id="side">
+  <div id="tabs" role="tablist">
+    <button data-tab="presets" data-label="Presets">Presets</button>
+    <button data-tab="instruments" data-label="Instruments">Instruments</button>
+    <button data-tab="samples" data-label="Samples">Samples</button>
+  </div>
+  <input id="filter" type="search" placeholder="Filter by name…" aria-label="Filter">
+  <ul id="list"></ul>
+</nav>
+<main id="main"></main>
+<script type="module" src="viewer.js"></script>
+</body>
+</html>
